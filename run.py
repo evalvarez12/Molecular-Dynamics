@@ -7,14 +7,14 @@ import model
 
 # initial setup
 
-N = 10
-np.random.seed(0)
-box_size = 10
+N = 2
+# np.random.seed(0)
+box_size = 5
 init_pos = 10*np.random.random((N, 2))
-init_vel = 8*np.random.random((N, 2))
+init_vel = 8*np.random.random((N, 2)) * 0
 
 
-system = model.system(init_pos,init_vel,box_size,physics.newton,physics.leonard_jones)
+system = model.system(init_pos, init_vel, box_size, physics.velocity_verlet, physics.leonard_jones)
 dt = 1. / 500.
 
 

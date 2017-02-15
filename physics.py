@@ -1,10 +1,32 @@
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
-def normal_vec_2d(r) :
-    # D is matrix containing the distances from a point to all points in each row
+def find_min_tor(r, L) :
+    z = np.zeros(len(r))
+    l = np.ones(len(r)) * L
+
+    r2 = r + np.stack((z,l),axis = -1)
+    r3 = r - np.stack((z,l),axis = -1)
+    r4 = r + np.stack((l,z),axis = -1)
+    r5 = r - np.stack((l,z),axis = -1)
+
+
     D = squareform(pdist(r))[:]
+    D2 = squareform(pdist(r2))[:]
+    D3 = squareform(pdist(r3))[:]
+    D4 = squareform(pdist(r4))[:]
+    D5 = squareform(pdist(r5))[:]
+
+    D = np.min(np.stack((D, D2, D3, D4, D5), axis = -1), axis = 2)
+
     D[D == 0] = 1
+    return D
+
+
+
+def normal_vec_2d(r, L) :
+    # D is matrix containing the distances from a point to all points in each row
+    D = find_min_tor(r, L)
 
 
     vecs = np.array([i - r for i in r])
@@ -18,12 +40,12 @@ def normal_vec_2d(r) :
     return rx, ry, D
 
 
-def find_force(f, r) :
-    rx, ry, D = normal_vec_2d(r)
+def find_force(f_func, r, L) :
+    rx, ry, D = normal_vec_2d(r, L)
 
     # Get the forces
-    fx = np.multiply(np.abs(rx),f(D))
-    fy = np.multiply(np.abs(ry),f(D))
+    fx = np.multiply(np.abs(rx),f_func(D))
+    fy = np.multiply(np.abs(ry),f_func(D))
     f = []
     for i in range(len(D)) :
         f += [[np.dot(rx[i],fx[i]),np.dot(ry[i],fy[i])]]
@@ -39,11 +61,16 @@ def leonard_jones(r) :
 def leonard_jones_potential(r) :
     return 4.*((1./r**12) - (1./r**6))
 
-def newton(x, v, f, dt) :
+def newton(x, v, L, dt, f_func) :
+    f = find_force(f_func, x, L)
     x = x + dt*v
     v = v + dt*f
     return x, v
 
 
-def velocity_verlet(x, v, f, dt) :
+def velocity_verlet(x, v, L, dt, f_func = leonard_jones) :
+    f = find_force(f_func, x, L)
+    x = x + dt*v + dt**2*f
+    f_new = find_force(f_func, x, L)
+    v = v + dt/2*(f_new + f)
     return x, v
