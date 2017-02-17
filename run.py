@@ -7,7 +7,7 @@ import model
 
 # initial setup
 
-N = 2
+N = 3
 # np.random.seed(0)
 box_size = 5
 init_pos = 10*np.random.random((N, 2))
