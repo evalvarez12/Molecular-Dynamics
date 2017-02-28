@@ -4,14 +4,14 @@ import numpy as np
 
 class test_physics(unittest.TestCase):
 
-    def test_find_min_tor(self) :
-        L = 3
-        r = np.array([[0,0],[3,0]])
-        D = phy.find_min_tor(r, L)
-        print(D)
+    # def test_find_min_tor(self) :
+    #     L = 3
+    #     r = np.array([[0,0],[3,0]])
+    #     D = phy.find_min_tor(r, L)
+    #     print(D)
 
     def test_normal_vec(self):
-        L = 3
+        L = 4
         r = np.array([[0,0],[1,2]])
         rx, ry, D = phy.normal_vec_2d(r, L)
         D_test = np.array([[1,np.sqrt(5)],[np.sqrt(5),1]])
