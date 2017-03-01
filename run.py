@@ -7,19 +7,22 @@ import model
 
 # initial setup
 
-N = 20
-
+n = 11
+N = n**2
 # np.random.seed(0)
 box_size = 5
-# ipos = np.linspace(0, box_size,np.sqrt(N))
+ipos = np.linspace(0, box_size - 1,n)
+m = np.meshgrid(ipos,ipos)
+m = np.stack((m[0],m[1]), axis = 2)
+m = np.concatenate((m[:]))
 # m= np.meshgrid(ipos,ipos)
 # init_pos = np.reshape(np.stack((m[0],m[1]), axis = 2),(N,2))
-init_pos = box_size*np.random.random((N,2))
-init_vel = 5*np.random.random((N, 2))
+init_pos = m
+init_vel = 10000*np.random.random((N, 2))
 
 
 system = model.system(init_pos, init_vel, box_size, physics.velocity_verlet, physics.leonard_jones)
-dt = 1. / 10000.
+dt = 1. / 100000000.
 
 
 # set up figure and animation
