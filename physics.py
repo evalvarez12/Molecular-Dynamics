@@ -30,7 +30,7 @@ def normal_vec_2d(r, L) :
     vecs = np.zeros((len(r),len(r),2))
 
     temp = np.zeros((9,len(r),2))
-    virtual = np.array([[0,L],[0,-L],[L,0],[-L,0],[L,L],[L,-L],[-L,L],[-L,-L]])
+    virtual = np.array([[0,L],[0,-L],[L,0],[-L,0],[L,L],[L,-L],[-L,L],[-L,-L],[0,0]])
 
 
     for i in range(len(r)) :
@@ -38,8 +38,9 @@ def normal_vec_2d(r, L) :
         # D[i] = np.linalg.norm(vecs[i], axis = 1)
         for v in range(len(virtual)) :
             temp[v] = vecs[i] + virtual[v]
-        temp[-1] = vecs[i]
         D[i] = np.min(np.linalg.norm(temp, axis = 2), axis = 0 )
+        ind = np.argmin(np.linalg.norm(temp, axis = 2), axis = 0 )
+        vecs[i] += virtual[ind]
     # vecs = np.array([i - r for i in r])
     D[D == 0] = 1
     vecsx = vecs[:,:,0]
