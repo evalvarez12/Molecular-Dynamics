@@ -52,17 +52,19 @@ def normal_vec_2d(r, L) :
     return rx, ry, D
 
 
-def find_force(f_func, r, L) :
+def find_force(r, L) :
     rx, ry, D = normal_vec_2d(r, L)
 
     # Get the forces
-    fx = np.multiply(np.abs(rx),f_func(D))
-    fy = np.multiply(np.abs(ry),f_func(D))
+    fx = np.multiply(rx,leonard_jones(D))
+    fy = np.multiply(ry,leonard_jones(D))
     f = []
     for i in range(len(D)) :
-        f += [[np.dot(rx[i],fx[i]),np.dot(ry[i],fy[i])]]
+        f += [[np.sum(fx[i]),np.sum(fy[i])]]
     f = np.array(f)
-    return f
+    potential = leonard_jones_potential(D).sum()
+
+    return f, potential
 
 
 def leonard_jones(r) :
@@ -73,16 +75,16 @@ def leonard_jones(r) :
 def leonard_jones_potential(r) :
     return 4.*((1./r**12) - (1./r**6))
 
-def newton(x, v, L, dt, f_func) :
-    f = find_force(f_func, x, L)
+def newton(x, v, L, dt) :
+    f = find_force(x, L)
     x = x + dt*v
     v = v + dt*f
     return x, v
 
 
-def velocity_verlet(x, v, L, dt, f_func = leonard_jones) :
-    f = find_force(f_func, x, L)
-    x = x + dt*v + dt**2*f
-    f_new = find_force(f_func, x, L)
+def velocity_verlet(x, v, L, dt) :
+    f, potential = find_force(x, L)
+    x = x + dt*v + dt**2*f/2
+    f_new, potential = find_force(x, L)
     v = v + dt/2*(f_new + f)
-    return x, v
+    return x, v, potential

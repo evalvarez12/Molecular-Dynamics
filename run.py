@@ -7,7 +7,7 @@ import model
 
 # initial setup
 
-n = 11
+n = 10
 N = n**2
 # np.random.seed(0)
 box_size = 5
@@ -21,7 +21,7 @@ init_pos = m
 init_vel = 10000*np.random.random((N, 2))
 
 
-system = model.system(init_pos, init_vel, box_size, physics.velocity_verlet, physics.leonard_jones)
+system = model.system(init_pos, init_vel, box_size)
 dt = 1. / 100000000.
 
 
@@ -54,6 +54,7 @@ def animate(i):
     # update pieces of the animation
     rect.set_edgecolor('k')
     particles.set_data(system.state_pos[:, 0], system.state_pos[:, 1])
+    print(system.kinetic_energy + system.potential_energy)
     # particles.set_markersize(ms)
     return particles, rect
 
