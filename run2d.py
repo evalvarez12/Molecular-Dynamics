@@ -7,7 +7,7 @@ import model
 
 # initial setup
 
-n = 10
+n = 7
 N = n**2
 # np.random.seed(0)
 box_size = 5
