@@ -2,7 +2,8 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
 
-def normal_vec_2d(r, L) :
+# TODO 2d and 3d funcs should be one generalized
+def normal_vecs(r, L) :
     # TODO optimize min distance
     # D is matrix containing the distances from a point to all points in each row
     D = np.zeros((len(r),len(r)))
@@ -17,26 +18,20 @@ def normal_vec_2d(r, L) :
     D = np.linalg.norm(vecs, axis = 2)
 
     D[D == 0] = 1
-    vecsx = vecs[:,:,0]
-    vecsy = vecs[:,:,1]
 
-    # rx and ry are matrices contining the normalized vectors from a point to the rest in each row
-    rx = np.divide(vecsx,D)
-    ry = np.divide(vecsy,D)
-    return rx, ry, D
+    # divides vectors by its distance by using python magic
+    r_norm = np.einsum("ijk, ij -> ijk", vecs, 1./D)
 
+    # r_norm normalized vectors from a point to the rest in each row
+    return r_norm, D
 
-def find_force(r_x, r_y, D) :
+def find_force(r_norm, D) :
 
     # Get the forces
-    f_x = np.multiply(r_x,leonard_jones(D))
-    f_y = np.multiply(r_y,leonard_jones(D))
+    f = np.einsum("ijk, ij -> ijk", r_norm, leonard_jones(D))
 
     # Sum all components of each particle into a vector
-    f = []
-    for i in range(len(D)) :
-        f += [[np.sum(f_x[i]),np.sum(f_y[i])]]
-    f = np.array(f)
+    f = np.sum(f, axis = 1)
 
     return f
 
