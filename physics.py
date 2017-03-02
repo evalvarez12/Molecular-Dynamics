@@ -1,14 +1,12 @@
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
-
-# TODO 2d and 3d funcs should be one generalized
 def normal_vecs(r, L) :
-    # TODO optimize min distance
     # D is matrix containing the distances from a point to all points in each row
     D = np.zeros((len(r),len(r)))
-    vecs = np.zeros((len(r),len(r),2))
+    vecs = np.zeros((len(r),len(r),r.shape[-1]))
 
+    # TODO optimize this loop
     for i in range(len(r)) :
         vecs[i] = r[i] - r
     # vecs = np.array([r - i for i in r])
@@ -38,8 +36,6 @@ def find_force(r_norm, D) :
 
 def leonard_jones(r) :
     return -4*(-(12./r**13) + (6./r**7))
-
-
 
 def leonard_jones_potential(r) :
     return 4.*((1./r**12) - (1./r**6))
