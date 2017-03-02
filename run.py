@@ -22,7 +22,7 @@ init_vel = 10000*np.random.random((N, 2))
 
 
 system = model.system(init_pos, init_vel, box_size)
-dt = 1. / 100000000.
+dt = 1. / 1000000.
 
 
 # set up figure and animation
