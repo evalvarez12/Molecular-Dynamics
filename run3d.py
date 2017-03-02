@@ -9,20 +9,21 @@ import model
 
 n = 7
 N = n**3
-# np.random.seed(0)
 box_size = 5
+
+# initialize in mesh
 ipos = np.linspace(0, box_size - 1,n)
 m = np.meshgrid(ipos,ipos,ipos)
 m = np.stack((m[:]), axis = 3)
 m = np.concatenate(np.concatenate((m), axis = 1))
-# m= np.meshgrid(ipos,ipos)
-# init_pos = np.reshape(np.stack((m[0],m[1]), axis = 2),(N,2))
+
+# initial pos and vel
 init_pos = m
-init_vel = 10000*np.random.random((N, 3))
+init_vel = 10000*(1-2*np.random.random((N, 3)))
 
 
 system = model.system(init_pos, init_vel, box_size)
-dt = 1. / 1000000.
+dt = 1. / 100000000.
 
 
 # set up figure and animation

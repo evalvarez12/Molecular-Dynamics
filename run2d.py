@@ -7,20 +7,22 @@ import model
 
 # initial setup
 
-n = 7
+n = 10
 N = n**2
-# np.random.seed(0)
 box_size = 5
+
+# initial positions in a equally spaced mesh
 ipos = np.linspace(0, box_size - 1,n)
 m = np.meshgrid(ipos,ipos)
 m = np.stack((m[0],m[1]), axis = 2)
 m = np.concatenate((m[:]))
-# m= np.meshgrid(ipos,ipos)
-# init_pos = np.reshape(np.stack((m[0],m[1]), axis = 2),(N,2))
 init_pos = m
-init_vel = 10000*np.random.random((N, 2))
+
+# initial velocities
+init_vel = 10000*(1-2*np.random.random((N, 2)))
 
 
+# initialize object system
 system = model.system(init_pos, init_vel, box_size)
 dt = 1. / 1000000.
 
