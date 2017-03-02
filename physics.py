@@ -11,20 +11,21 @@ def normal_vecs(r, L) :
         vecs[i] = r[i] - r
     # vecs = np.array([r - i for i in r])
 
+    # Image distance calculations
     vecs = ( vecs + L/2. ) % L - L/2.
     vecs[vecs > L/2.] *= -1
     D = np.linalg.norm(vecs, axis = 2)
 
+    # remove 0s from distance to be able to normalize
     D[D == 0] = 1
 
     # divides vectors by its distance by using python magic
+    # r_norm normalized vectors from a point to the rest in each row
     r_norm = np.einsum("ijk, ij -> ijk", vecs, 1./D)
 
-    # r_norm normalized vectors from a point to the rest in each row
     return r_norm, D
 
 def find_force(r_norm, D) :
-
     # Get the forces
     f = np.einsum("ijk, ij -> ijk", r_norm, leonard_jones(D))
 
