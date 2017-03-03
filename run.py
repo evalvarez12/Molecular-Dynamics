@@ -7,32 +7,24 @@ import model
 
 # initial setup
 
-n = 5
+n = 10
 N = n**2
+# np.random.seed(0)
 box_size = 5
-T = 100
-
-# initial positions in a equally spaced mesh
 ipos = np.linspace(0, box_size - 1,n)
 m = np.meshgrid(ipos,ipos)
 m = np.stack((m[0],m[1]), axis = 2)
 m = np.concatenate((m[:]))
+# m= np.meshgrid(ipos,ipos)
+# init_pos = np.reshape(np.stack((m[0],m[1]), axis = 2),(N,2))
 init_pos = m
-
-# initial velocities
-# init_vel = 10000*(1-2*np.random.random((N, 2)))
-init_vel = np.random.normal(0,np.sqrt(T),(N,2))
-
-# Storage for energy data
+init_vel = 10000*np.random.random((N, 2))
 E_kin = np.array([])
 E_pot = np.array([])
-E_kin_var = np.array([])
-E_pot_var = np.array([])
 
 
-# initialize object system
 system = model.system(init_pos, init_vel, box_size)
-dt = 1. / 1000.
+dt = 1. / 1000000.
 
 
 # set up figure and animation
@@ -55,7 +47,7 @@ def init():
     return particles, rect
 
 def animate(i):
-    global box, rect, dt, ax, E_kin, E_pot, E_kin_var, E_pot_var, fig
+    global box, rect, dt, ax, fig
     system.step(dt)
 
     ms = int(fig.dpi * 2 * box_size * fig.get_figwidth()
@@ -64,19 +56,7 @@ def animate(i):
     # update pieces of the animation
     rect.set_edgecolor('k')
     particles.set_data(system.state_pos[:, 0], system.state_pos[:, 1])
-    
-    E_kin = np.append(E_kin, system.kinetic_energy)
-    E_pot = np.append(E_pot, system.potential_energy)
-
-    E_kin_var = np.append(E_kin_var,np.var(E_kin))
-    E_pot_var = np.append(E_pot_var,np.var(E_pot))
-    
-    
-    print("Total Energy = ",system.kinetic_energy + system.potential_energy)
-
-
-
-
+    print("Total energy is: ", system.kinetic_energy + system.potential_energy, "Kinetic Energy = ", system.kinetic_energy, "Potential_Energy = ", system.potential_energy)
     # particles.set_markersize(ms)
     return particles, rect
 
@@ -84,14 +64,4 @@ ani = animation.FuncAnimation(fig, animate, frames=600,
                               interval=10, blit=True, init_func=init)
 
 
-plt.show()
-
-x = np.linspace(0,len(E_kin),len(E_kin))
-
-plt.figure(2)
-plt.subplot(211)
-plt.plot(x, E_kin, 'b', x, E_pot, 'r')
-
-plt.subplot(212)
-plt.plot(x, E_kin_var, 'b', x, E_pot_var, 'r')
 plt.show()
