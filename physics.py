@@ -1,6 +1,12 @@
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
+
+def find_pressure(D) :
+    f = np.einsum("ijk, ij -> ijk", r_norm, leonard_jones(D))
+
+
+
 def normal_vecs(r, L) :
     # D is matrix containing the distances from a point to all points in each row
     D = np.zeros((len(r),len(r)))

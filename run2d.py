@@ -6,14 +6,16 @@ import physics
 import model
 
 # initial setup
-
-n = 5
-N = n**2
-box_size = 5
+rho = 2
 T = 100
 
+# set parameters
+box_size = 5
+n = int(np.sqrt(box_size**2*rho))
+N = n**2
+
 # initial positions in a equally spaced mesh
-ipos = np.linspace(0, box_size - 1,n)
+ipos = np.linspace(0, box_size - box_size/n,n)
 m = np.meshgrid(ipos,ipos)
 m = np.stack((m[0],m[1]), axis = 2)
 m = np.concatenate((m[:]))
@@ -32,7 +34,7 @@ E_pot_var = np.array([])
 
 # initialize object system
 system = model.system(init_pos, init_vel, box_size)
-dt = 1. / 1000.
+dt = 1. / 100000.
 
 
 # set up figure and animation
@@ -64,14 +66,14 @@ def animate(i):
     # update pieces of the animation
     rect.set_edgecolor('k')
     particles.set_data(system.state_pos[:, 0], system.state_pos[:, 1])
-    
+
     E_kin = np.append(E_kin, system.kinetic_energy)
     E_pot = np.append(E_pot, system.potential_energy)
 
     E_kin_var = np.append(E_kin_var,np.var(E_kin))
     E_pot_var = np.append(E_pot_var,np.var(E_pot))
-    
-    
+
+
     print("Total Energy = ",system.kinetic_energy + system.potential_energy)
 
 
