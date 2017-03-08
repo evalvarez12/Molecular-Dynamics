@@ -6,24 +6,10 @@ import physics
 import model
 
 # initial setup
-rho = 2
-T = 100
-
-# set parameters
+rho = .88
+T = 1.
 box_size = 5
-n = int(np.sqrt(box_size**2*rho))
-N = n**2
 
-# initial positions in a equally spaced mesh
-ipos = np.linspace(0, box_size - box_size/n,n)
-m = np.meshgrid(ipos,ipos)
-m = np.stack((m[0],m[1]), axis = 2)
-m = np.concatenate((m[:]))
-init_pos = m
-
-# initial velocities
-# init_vel = 10000*(1-2*np.random.random((N, 2)))
-init_vel = np.random.normal(0,np.sqrt(T),(N,2))
 
 # Storage for energy data
 E_kin = np.array([])
@@ -33,9 +19,13 @@ E_pot_var = np.array([])
 
 
 # initialize object system
-system = model.system(init_pos, init_vel, box_size)
-dt = 1. / 100000.
+system = model.system(rho, T, 2)
+dt = 1. / 1000.
 
+system.equilibrate(dt)
+system.equilibrate(dt)
+system.equilibrate(dt)
+system.equilibrate(dt)
 
 # set up figure and animation
 fig = plt.figure()
@@ -74,7 +64,7 @@ def animate(i):
     E_pot_var = np.append(E_pot_var,np.var(E_pot))
 
 
-    print("Total Energy = ",system.kinetic_energy + system.potential_energy)
+    # print("Total Energy = ",system.kinetic_energy + system.potential_energy)
 
 
 
@@ -89,6 +79,7 @@ ani = animation.FuncAnimation(fig, animate, frames=600,
 plt.show()
 
 x = np.linspace(0,len(E_kin),len(E_kin))
+r_norm, D = physics.normal_vecs(system.state_pos, box_size)
 
 plt.figure(2)
 plt.subplot(211)
@@ -96,4 +87,17 @@ plt.plot(x, E_kin, 'b', x, E_pot, 'r')
 
 plt.subplot(212)
 plt.plot(x, E_kin_var, 'b', x, E_pot_var, 'r')
+plt.show()
+
+D = D.flatten()
+
+plt.hist(D, bins=100)
+plt.show()
+
+D_hist, D_hist_edges = np.histogram(D, bins = 100)
+# print(D_hist)
+
+sp = np.fft.fft(D_hist)
+freq = np.fft.fftfreq(D_hist.shape[-1])
+plt.plot(freq[2:50],sp.real[2:50])
 plt.show()
