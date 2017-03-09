@@ -23,7 +23,8 @@ class system:
         # initial measurements
         self.potential_energy =  physics.potential_energy(D)
         self.kinetic_energy = physics.kinetic_energy(self.state_vel)
-        self.pressure = physics.pressure(D, self.V, self.T)
+        self.pressure = physics.pressure(self.N, D, self.V, self.T)
+        self.temperature = physics.temperature(self.state_vel)
 
 
 
@@ -62,7 +63,8 @@ class system:
         # calculate the macroscopic quantities
         self.potential_energy =  physics.potential_energy(D)
         self.kinetic_energy = physics.kinetic_energy(self.state_vel)
-        self.pressure = physics.pressure(D, self.V, self.T)
+        self.pressure = physics.pressure(self.N, D, self.V, self.T)
+        self.temperature = physics.temperature(self.state_vel)
 
 
     def equilibrate(self) :

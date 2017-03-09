@@ -15,6 +15,7 @@ dt = .004
 E_kin = np.array([])
 E_pot = np.array([])
 pressure = np.array([])
+temps = np.array([])
 E_kin_var = np.array([])
 E_pot_var = np.array([])
 
@@ -24,12 +25,12 @@ system = model.system(rho, T, dim)
 print("N = ", system.N)
 
 for i in range(3) :
-    for j in range(100) :
+    for j in range(10) :
         system.step(dt)
     system.equilibrate()
 
 
-for i in range(1000) :
+for i in range(10) :
     system.step(dt)
     E_kin = np.append(E_kin, system.kinetic_energy)
     E_pot = np.append(E_pot, system.potential_energy)
@@ -38,6 +39,7 @@ for i in range(1000) :
     E_pot_var = np.append(E_pot_var,np.var(E_pot))
 
     pressure = np.append(pressure, system.pressure/rho)
+    temps = np.append(temps, system.temperature)
 
 r_norm, D = physics.normal_vecs(system.N, system.state_pos, system.box_size)
 np.fill_diagonal(D, 0)
@@ -58,7 +60,7 @@ plt.subplot(211)
 plt.plot(x, E_kin, 'b', x, E_pot, 'r')
 
 plt.subplot(212)
-plt.plot(x, pressure, 'b')
+plt.plot(x, pressure, 'b', temps, 'r')
 plt.show()
 
 print("P = ", np.average(pressure))
