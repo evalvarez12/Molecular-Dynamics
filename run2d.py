@@ -8,8 +8,8 @@ import model
 # initial setup
 rho = .88
 T = 1.
-box_size = 5
-
+dim = 3
+dt = 1. / 1000.
 
 # Storage for energy data
 E_kin = np.array([])
@@ -19,8 +19,7 @@ E_pot_var = np.array([])
 
 
 # initialize object system
-system = model.system(rho, T, 2)
-dt = 1. / 1000.
+system = model.system(rho, T, dim)
 
 system.equilibrate(dt)
 system.equilibrate(dt)
@@ -28,6 +27,7 @@ system.equilibrate(dt)
 system.equilibrate(dt)
 
 # set up figure and animation
+box_size = 5
 fig = plt.figure()
 fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
 ax = fig.add_subplot(111, aspect='equal', autoscale_on=False,
@@ -63,14 +63,8 @@ def animate(i):
     E_kin_var = np.append(E_kin_var,np.var(E_kin))
     E_pot_var = np.append(E_pot_var,np.var(E_pot))
 
-
-    # print("Total Energy = ",system.kinetic_energy + system.potential_energy)
-
-
-
-
-    # particles.set_markersize(ms)
     return particles, rect
+
 
 ani = animation.FuncAnimation(fig, animate, frames=600,
                               interval=10, blit=True, init_func=init)

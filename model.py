@@ -7,9 +7,10 @@ class system:
         self.time = 0
         self.box_size = 5
         self.equilibrium = False
-        n = int(np.sqrt(self.box_size**2*rho))
-        self.N = n**2
+        n = int(round(((self.box_size**dim)*rho)**(1./dim)))
+        self.N = n**dim
         self.T = T
+        self.volume = self.box_size**dim
 
         # Distribute velocities and positions
         self.state_pos = self.set_positions(n, dim)
@@ -21,7 +22,7 @@ class system:
 
         # initial energies
         self.potential_energy =  physics.leonard_jones_potential(D).sum()
-        self.kinetic_energy = np.sum(self.state_vel[:,0]**2) + np.sum(self.state_vel[:,1]**2)
+        self.kinetic_energy = np.sum(self.state_vel**2)/2.
 
 
 
@@ -31,12 +32,15 @@ class system:
 
         if dim == 2 :
             ipos = np.meshgrid(ipos, ipos)
+            ipos = np.stack((ipos[:]), axis = dim)
+            ipos = np.concatenate((ipos))
 
         if dim == 3 :
             ipos = np.meshgrid(ipos, ipos, ipos)
+            ipos = np.stack((ipos[:]), axis = dim)
+            ipos = np.concatenate((np.concatenate((ipos), axis = 1)))
 
-        ipos = np.stack((ipos[:]), axis = dim)
-        return np.concatenate((ipos[:]))
+        return ipos
 
     def step(self, dt) :
         # Step uses velocity_verlet algoithm to evolve the system
