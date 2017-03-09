@@ -21,7 +21,7 @@ class system:
         self.forces = physics.find_force(r_norm, D)
 
         # initial energies
-        self.potential_energy =  physics.leonard_jones_potential(D).sum()
+        self.potential_energy =  physics.leonard_jones_potential(D).sum()/2.
         self.kinetic_energy = np.sum(self.state_vel**2)/2.
 
 
@@ -58,7 +58,7 @@ class system:
         self.forces = f
 
         # calculate the energies
-        self.potential_energy =  np.sum(physics.leonard_jones_potential(D))
+        self.potential_energy =  np.sum(physics.leonard_jones_potential(D))/2.
         self.kinetic_energy = np.sum(self.state_vel**2)
 
     def equilibrate(self, dt) :
@@ -68,5 +68,4 @@ class system:
             self.step(dt)
 
         lamb = np.sqrt((self.N - 1) * self.T / self.kinetic_energy)
-
         self.state_vel = self.state_vel * lamb

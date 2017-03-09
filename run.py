@@ -6,7 +6,7 @@ import physics
 import model
 
 # initial setup
-rho = .88
+rho = .5
 T = 1.
 dim = 3
 dt = 1. / 1000.
@@ -73,7 +73,6 @@ ani = animation.FuncAnimation(fig, animate, frames=600,
 plt.show()
 
 x = np.linspace(0,len(E_kin),len(E_kin))
-r_norm, D = physics.normal_vecs(system.state_pos, box_size)
 
 plt.figure(2)
 plt.subplot(211)
@@ -83,6 +82,7 @@ plt.subplot(212)
 plt.plot(x, E_kin_var, 'b', x, E_pot_var, 'r')
 plt.show()
 
+r_norm, D = physics.normal_vecs(system.state_pos, box_size)
 D = D.flatten()
 
 plt.hist(D, bins=100)

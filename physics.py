@@ -33,7 +33,7 @@ def normal_vecs(r, L) :
 
 def find_force(r_norm, D) :
     # Get the forces
-    f = np.einsum("ijk, ij -> ijk", r_norm, leonard_jones(D))
+    f = np.einsum("ijk, ij -> ijk", r_norm, leonard_jones_force(D))
 
     # Sum all components of each particle into a vector
     f = np.sum(f, axis = 1)
@@ -41,7 +41,7 @@ def find_force(r_norm, D) :
     return f
 
 
-def leonard_jones(r) :
+def leonard_jones_force(r) :
     return -4*(-(12./r**13) + (6./r**7))
 
 def leonard_jones_potential(r) :
