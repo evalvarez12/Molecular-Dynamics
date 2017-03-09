@@ -14,7 +14,7 @@ def normal_vecs(N, r, L) :
 
     # Image distance calculations
     vecs = ( vecs + L/2. ) % L - L/2.
-    vecs[vecs > L/2.] *= -1
+    # vecs[vecs > L/2.] *= -1
     D = np.linalg.norm(vecs, axis = 2)
 
     # remove 0s from distance to be able to normalize
@@ -38,6 +38,9 @@ def find_force(r_norm, D) :
 
 def leonard_jones_force(r) :
     return -4*(-(12./r**13) + (6./r**7))
+
+def leonard_jones_force_norm(r) :
+    return -4*(-(12./r**14) + (6./r**8))
 
 def leonard_jones_potential(r) :
     return 4.*((1./r**12) - (1./r**6))

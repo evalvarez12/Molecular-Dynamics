@@ -5,10 +5,16 @@ import matplotlib.animation as animation
 import physics
 import model
 
+# Atmospheric
+# rho = 0.0010743
+# T = 315
+
 # initial setup
-rho = 0.8
-T = 1
+rho = 0.0010743
 dim = 3
+n = 8
+N = n ** dim
+T = 315
 dt = .004
 
 # Storage for energy data
@@ -21,24 +27,27 @@ E_pot_var = np.array([])
 
 
 # initialize object system
-system = model.system(rho, T, dim)
+system = model.system(n, rho, T, dim)
 print("N = ", system.N)
+print("box_size = ", system.box_size)
 
-for i in range(3) :
-    for j in range(1000) :
+for j in range(100) :
+    for i in range(4) :
         system.step(dt)
     system.equilibrate()
+    print(j)
 
 
-for i in range(1000) :
+for i in range(10) :
     system.step(dt)
+    system.set_quantities()
     E_kin = np.append(E_kin, system.kinetic_energy)
     E_pot = np.append(E_pot, system.potential_energy)
 
     E_kin_var = np.append(E_kin_var,np.var(E_kin))
     E_pot_var = np.append(E_pot_var,np.var(E_pot))
 
-    pressure = np.append(pressure, system.pressure/rho)
+    pressure = np.append(pressure, system.pressure)
     temps = np.append(temps, system.temperature)
 
 r_norm, D = physics.normal_vecs(system.N, system.state_pos, system.box_size)
@@ -68,12 +77,12 @@ print("T = ", np.average(temps))
 
 D_flat = D.flatten()
 
-plt.hist(D_flat, bins=100)
+plt.hist(D_flat, bins=200)
 plt.show()
 
-D_hist, D_hist_edges = np.histogram(D_flat, bins = 100)
+D_hist, D_hist_edges = np.histogram(D_flat, bins = 200)
 
 sp = np.fft.fft(D_hist)
 freq = np.fft.fftfreq(D_hist.shape[-1])
-plt.plot(freq[2:50],sp.real[2:50])
+plt.plot(freq,sp.real)
 plt.show()
