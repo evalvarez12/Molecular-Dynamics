@@ -5,7 +5,7 @@ class system:
     def __init__(self, rho, T, dim) :
         # Initial setup
         self.time = 0
-        self.box_size = 5
+        self.box_size = 10
         self.equilibrium = False
         n = int(round(((self.box_size**dim)*rho)**(1./dim)))
         self.N = n**dim
@@ -17,7 +17,7 @@ class system:
         self.state_vel = np.random.normal(0,np.sqrt(2./3. * T),(self.N,dim))
 
         # initial force
-        r_norm, D = physics.normal_vecs(self.state_pos, self.box_size)
+        r_norm, D = physics.normal_vecs(self.N, self.state_pos, self.box_size)
         self.forces = physics.find_force(r_norm, D)
 
         # initial measurements
@@ -51,7 +51,7 @@ class system:
         # update postion
         self.state_pos = (self.state_pos + dt*self.state_vel + dt**2*self.forces/2 ) % self.box_size
 
-        r_norm, D = physics.normal_vecs(self.state_pos, self.box_size)
+        r_norm, D = physics.normal_vecs(self.N, self.state_pos, self.box_size)
         f = physics.find_force(r_norm, D)
 
         # update velocities

@@ -10,21 +10,23 @@ def potential_energy(D) :
     np.fill_diagonal(E, 0)
     return  np.sum(E)/2.
 
-def pressure(D, V, T) :
+def pressure(N, D, V, T) :
     f = leonard_jones_force(D)
     np.fill_diagonal(f, 0)
     virial = np.sum(f*D)/2.
-    return virial/(3*V) + len(D)*T/V
+    return virial/(3*V) + N*T/V
 
+def temperature(vel) :
+    # The 3 is because dim = 3
+    return np.average(np.linalg.norm(vel , axis = -1)**2)/3.
 
-
-def normal_vecs(r, L) :
+def normal_vecs(N, r, L) :
     # D is matrix containing the distances from a point to all points in each row
-    D = np.zeros((len(r),len(r)))
-    vecs = np.zeros((len(r),len(r),r.shape[-1]))
+    D = np.zeros((N, N))
+    vecs = np.zeros((N, N,r.shape[-1]))
 
     # TODO optimize this loop
-    for i in range(len(r)) :
+    for i in range(N) :
         vecs[i] = r[i] - r
     # vecs = np.array([r - i for i in r])
 
