@@ -14,10 +14,10 @@ def pressure(N, D, V, T) :
     f = leonard_jones_force(D)
     np.fill_diagonal(f, 0)
     virial = np.sum(f*D)/2.
-    return virial/(3*V) + N*T/V
+    return virial/(3*V * T) + N*T/V
 
 def temperature(vel) :
-    # The 3 is because dim = 3
+    # TODO The 3 is because dim = 3
     return np.average(np.linalg.norm(vel , axis = -1)**2)/3.
 
 def normal_vecs(N, r, L) :
