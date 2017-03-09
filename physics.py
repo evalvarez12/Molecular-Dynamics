@@ -2,24 +2,6 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
 
-def kinetic_energy(vel) :
-    return  np.sum(vel**2)/2.
-
-def potential_energy(D) :
-    E = leonard_jones_potential(D)
-    np.fill_diagonal(E, 0)
-    return  np.sum(E)/2.
-
-def pressure(N, D, V, T) :
-    f = leonard_jones_force(D)
-    np.fill_diagonal(f, 0)
-    virial = np.sum(f*D)/2.
-    return virial/(3* V * T) + N*T/V
-
-def temperature(vel) :
-    # TODO The 3 is because dim = 3
-    return np.average(np.linalg.norm(vel , axis = -1)**2)/3.
-
 def normal_vecs(N, r, L) :
     # D is matrix containing the distances from a point to all points in each row
     D = np.zeros((N, N))

@@ -25,12 +25,12 @@ system = model.system(rho, T, dim)
 print("N = ", system.N)
 
 for i in range(3) :
-    for j in range(10) :
+    for j in range(1000) :
         system.step(dt)
     system.equilibrate()
 
 
-for i in range(10) :
+for i in range(1000) :
     system.step(dt)
     E_kin = np.append(E_kin, system.kinetic_energy)
     E_pot = np.append(E_pot, system.potential_energy)
@@ -64,6 +64,7 @@ plt.plot(x, pressure, 'b', temps, 'r')
 plt.show()
 
 print("P = ", np.average(pressure))
+print("T = ", np.average(temps))
 
 D_flat = D.flatten()
 
