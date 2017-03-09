@@ -5,16 +5,12 @@ import matplotlib.animation as animation
 import physics
 import model
 
-# Atmospheric
-# rho = 0.0010743
-# T = 315
-
 # initial setup
-rho = 0.0010743
+rho = 0.88
 dim = 3
 n = 8
 N = n ** dim
-T = 315
+T = 1
 dt = .004
 
 # Storage for energy data
