@@ -6,14 +6,15 @@ import physics
 import model
 
 # initial setup
-rho = .5
+rho = .88
 T = 1.
 dim = 3
-dt = 1. / 1000.
+dt = .004
 
 # Storage for energy data
 E_kin = np.array([])
 E_pot = np.array([])
+pressure = np.array([])
 E_kin_var = np.array([])
 E_pot_var = np.array([])
 
@@ -21,10 +22,10 @@ E_pot_var = np.array([])
 # initialize object system
 system = model.system(rho, T, dim)
 
-system.equilibrate(dt)
-system.equilibrate(dt)
-system.equilibrate(dt)
-system.equilibrate(dt)
+for i in range(3) :
+    for j in range(200) :
+        system.step(dt)
+    system.equilibrate()
 
 # set up figure and animation
 box_size = 5
@@ -47,7 +48,7 @@ def init():
     return particles, rect
 
 def animate(i):
-    global box, rect, dt, ax, E_kin, E_pot, E_kin_var, E_pot_var, fig
+    global box, rect, dt, ax, E_kin, E_pot, E_kin_var, E_pot_var, pressure, fig
     system.step(dt)
 
     ms = int(fig.dpi * 2 * box_size * fig.get_figwidth()
@@ -63,6 +64,9 @@ def animate(i):
     E_kin_var = np.append(E_kin_var,np.var(E_kin))
     E_pot_var = np.append(E_pot_var,np.var(E_pot))
 
+
+    # pressure = np.append(pressure, system.pressure)
+
     return particles, rect
 
 
@@ -72,26 +76,11 @@ ani = animation.FuncAnimation(fig, animate, frames=600,
 
 plt.show()
 
-x = np.linspace(0,len(E_kin),len(E_kin))
-
-plt.figure(2)
-plt.subplot(211)
-plt.plot(x, E_kin, 'b', x, E_pot, 'r')
-
-plt.subplot(212)
-plt.plot(x, E_kin_var, 'b', x, E_pot_var, 'r')
-plt.show()
 
 r_norm, D = physics.normal_vecs(system.state_pos, box_size)
-D = D.flatten()
-
-plt.hist(D, bins=100)
-plt.show()
-
-D_hist, D_hist_edges = np.histogram(D, bins = 100)
-# print(D_hist)
-
-sp = np.fft.fft(D_hist)
-freq = np.fft.fftfreq(D_hist.shape[-1])
-plt.plot(freq[2:50],sp.real[2:50])
-plt.show()
+print(E_kin)
+# Save data
+np.save("data/KE.npy", E_kin)
+np.save("data/U.npy", E_pot)
+np.save("data/P.npy", pressure)
+np.save("data/D.npy", D)

@@ -10,7 +10,7 @@ class system:
         n = int(round(((self.box_size**dim)*rho)**(1./dim)))
         self.N = n**dim
         self.T = T
-        self.volume = self.box_size**dim
+        self.V = self.box_size**dim
 
         # Distribute velocities and positions
         self.state_pos = self.set_positions(n, dim)
@@ -20,9 +20,11 @@ class system:
         r_norm, D = physics.normal_vecs(self.state_pos, self.box_size)
         self.forces = physics.find_force(r_norm, D)
 
-        # initial energies
-        self.potential_energy =  physics.leonard_jones_potential(D).sum()/2.
-        self.kinetic_energy = np.sum(self.state_vel**2)/2.
+        # initial measurements
+        self.potential_energy =  physics.potential_energy(D)
+        self.kinetic_energy = physics.kinetic_energy(self.state_vel)
+        self.pressure = physics.pressure(D, self.V, self.T)
+
 
 
 
@@ -57,15 +59,12 @@ class system:
         # save force for next iteration
         self.forces = f
 
-        # calculate the energies
-        self.potential_energy =  np.sum(physics.leonard_jones_potential(D))/2.
-        self.kinetic_energy = np.sum(self.state_vel**2)
+        # calculate the macroscopic quantities
+        self.potential_energy =  physics.potential_energy(D)
+        self.kinetic_energy = physics.kinetic_energy(self.state_vel)
+        self.pressure = physics.pressure(D, self.V, self.T)
 
-    def equilibrate(self, dt) :
 
-        Ks = []
-        for i in range(1000) :
-            self.step(dt)
-
+    def equilibrate(self) :
         lamb = np.sqrt((self.N - 1) * self.T / self.kinetic_energy)
         self.state_vel = self.state_vel * lamb

@@ -2,8 +2,19 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
 
-def find_pressure(D) :
-    f = np.einsum("ijk, ij -> ijk", r_norm, leonard_jones(D))
+def kinetic_energy(vel) :
+    return  np.sum(vel**2)/2.
+
+def potential_energy(D) :
+    E = leonard_jones_potential(D)
+    np.fill_diagonal(E, 0)
+    return  np.sum(E)/2.
+
+def pressure(D, V, T) :
+    f = leonard_jones_force(D)
+    np.fill_diagonal(f, 0)
+    virial = np.sum(f*D)/2.
+    return virial/(3*V) + len(D)*T/V
 
 
 
