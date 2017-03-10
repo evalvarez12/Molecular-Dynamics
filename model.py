@@ -86,7 +86,9 @@ class system:
     def get_pressure(self) :
         f = physics.leonard_jones_force(self.D)
         np.fill_diagonal(f, 0)
-        virial = np.sum(f*self.D)/2.
+        virial = np.sum(np.multiply(f, self.D))/2.
+        # virial = np.sum(np.multiply(np.triu(f), self.D))
+        print(virial/(3 * self.V))
         return  self.N*self.temperature/self.V + virial/(3 * self.V )
         # return  self.N*self.temperature/self.V
 
