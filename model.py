@@ -17,9 +17,11 @@ class system:
         self.state_vel = np.random.normal(0,np.sqrt(T),(self.N,dim))
 
         # initial force
-        r_norm, D = physics.normal_vecs(self.N, self.state_pos, self.box_size)
-        self.D = D
-        self.forces = physics.find_force(r_norm, D)
+        # r_norm, D = physics.normal_vecs(self.N, self.state_pos, self.box_size)
+        self.forces, self.D = physics.get_force(self.N, self.state_pos, self.box_size)
+
+        # self.D = D
+        # self.forces = physics.find_force(r_norm, D)
 
         # initial measurements
         self.set_quantities()
@@ -49,9 +51,10 @@ class system:
         # update postion
         self.state_pos = (self.state_pos + dt*self.state_vel + dt**2*self.forces/2 ) % self.box_size
 
-        r_norm, D = physics.normal_vecs(self.N, self.state_pos, self.box_size)
-        f = physics.find_force(r_norm, D)
-        self.D = D
+        # r_norm, D = physics.normal_vecs(self.N, self.state_pos, self.box_size)
+        # f = physics.find_force(r_norm, D)
+        f, self.D = physics.get_force(self.N, self.state_pos, self.box_size)
+
         # update velocities
         self.state_vel = self.state_vel + dt/2*(self.forces + f)
         # save force for next iteration
@@ -83,9 +86,9 @@ class system:
     def get_pressure(self) :
         f = physics.leonard_jones_force(self.D)
         np.fill_diagonal(f, 0)
-        virial = np.sum(np.triu(f)*self.D)
-        # return  self.N*self.temperature/self.V + virial/(3 * self.V )
-        return  self.N*self.temperature/self.V
+        virial = np.sum(f*self.D)/2.
+        return  self.N*self.temperature/self.V + virial/(3 * self.V )
+        # return  self.N*self.temperature/self.V
 
     def get_temperature(self) :
         return 2 * self.kinetic_energy/(self.dim * (self.N - 1))

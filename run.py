@@ -6,9 +6,9 @@ import physics
 import model
 
 # initial setup
-rho = 0.88
+rho = 0.8
 dim = 3
-n = 8
+n = 9
 N = n ** dim
 T = 1
 dt = .004
@@ -28,25 +28,25 @@ print("N = ", system.N)
 print("box_size = ", system.box_size)
 
 for j in range(100) :
-    for i in range(4) :
+    for i in range(5) :
         system.step(dt)
     system.equilibrate()
     print(j)
 
 
-for i in range(10) :
+for i in range(200) :
     system.step(dt)
     system.set_quantities()
     E_kin = np.append(E_kin, system.kinetic_energy)
     E_pot = np.append(E_pot, system.potential_energy)
 
-    E_kin_var = np.append(E_kin_var,np.var(E_kin))
-    E_pot_var = np.append(E_pot_var,np.var(E_pot))
+    # E_kin_var = np.append(E_kin_var,np.var(E_kin))
+    # E_pot_var = np.append(E_pot_var,np.var(E_pot))
 
     pressure = np.append(pressure, system.pressure)
     temps = np.append(temps, system.temperature)
 
-r_norm, D = physics.normal_vecs(system.N, system.state_pos, system.box_size)
+D = system.D
 np.fill_diagonal(D, 0)
 
 # Save data
@@ -57,6 +57,8 @@ np.fill_diagonal(D, 0)
 
 
 
+print("P = ", np.average(pressure)/rho)
+print("T = ", np.average(temps))
 
 x = np.linspace(0,len(E_kin),len(E_kin))
 
@@ -68,8 +70,6 @@ plt.subplot(212)
 plt.plot(x, pressure, 'b', temps, 'r')
 plt.show()
 
-print("P = ", np.average(pressure))
-print("T = ", np.average(temps))
 
 D_flat = D.flatten()
 
@@ -80,5 +80,5 @@ D_hist, D_hist_edges = np.histogram(D_flat, bins = 200)
 
 sp = np.fft.fft(D_hist)
 freq = np.fft.fftfreq(D_hist.shape[-1])
-plt.plot(freq,sp.real)
+plt.plot(freq[1:],sp.real[1:])
 plt.show()
