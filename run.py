@@ -6,12 +6,12 @@ import physics
 import model
 
 # initial setup
-rho = 0.8
+rho = 0.7
 dim = 3
 n = 9
-N = n ** dim
 T = 1
 dt = .004
+N = n ** dim
 
 # Storage for energy data
 E_kin = np.array([])
@@ -27,14 +27,14 @@ system = model.system(n, rho, T, dim)
 print("N = ", system.N)
 print("box_size = ", system.box_size)
 
-for j in range(100) :
-    for i in range(5) :
+for j in range(150) :
+    for i in range(10) :
         system.step(dt)
     system.equilibrate()
     print(j)
 
 
-for i in range(200) :
+for i in range(2000) :
     system.step(dt)
     system.set_quantities()
     E_kin = np.append(E_kin, system.kinetic_energy)
