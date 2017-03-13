@@ -1,2 +1,5 @@
 #Python exec
 *.pyc
+
+#Data
+*.npygit s
