@@ -1,5 +1,2 @@
 #Python exec
 *.pyc
-
-#Data
-*.npy
