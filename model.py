@@ -17,11 +17,7 @@ class system:
         self.state_vel = np.random.normal(0,np.sqrt(T),(self.N,dim))
 
         # initial force
-        # r_norm, D = physics.normal_vecs(self.N, self.state_pos, self.box_size)
         self.forces, self.D = physics.get_force(self.N, self.state_pos, self.box_size)
-
-        # self.D = D
-        # self.forces = physics.find_force(r_norm, D)
 
         # initial measurements
         self.set_quantities()
@@ -51,8 +47,7 @@ class system:
         # update postion
         self.state_pos = (self.state_pos + dt*self.state_vel + dt**2*self.forces/2 ) % self.box_size
 
-        # r_norm, D = physics.normal_vecs(self.N, self.state_pos, self.box_size)
-        # f = physics.find_force(r_norm, D)
+        # find forces
         f, self.D = physics.get_force(self.N, self.state_pos, self.box_size)
 
         # update velocities
@@ -61,11 +56,10 @@ class system:
         self.forces = f
 
 
-        # calculate the macroscopic quantities
-        # self.get_quantities(D)
 
 
     def set_quantities(self) :
+        # Calculate all physical quantities
         self.potential_energy =  self.get_potential_energy()
         self.kinetic_energy = self.get_kinetic_energy()
         self.temperature = self.get_temperature()
@@ -87,8 +81,6 @@ class system:
         f = physics.leonard_jones_force(self.D)
         np.fill_diagonal(f, 0)
         virial = np.sum(np.multiply(f, self.D))/2.
-        # virial = np.sum(np.multiply(np.triu(f), self.D))
-        print(virial/(3 * self.V))
         return  self.N*self.temperature/self.V + virial/(3 * self.V )
         # return  self.N*self.temperature/self.V
 
